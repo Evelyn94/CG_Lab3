@@ -32,11 +32,14 @@ public class DrawArea extends JComponent implements MouseMotionListener,
 	int lastX;
 	int lastY;
 
+
 	//TODO step2
 	boolean fill=false;
 	int cX;
 	int cY;
 	int bc;
+
+
 
 	
 	public DrawArea(Dimension dim, DrawIt drawit) {
@@ -93,41 +96,41 @@ public class DrawArea extends JComponent implements MouseMotionListener,
 	public void mouseDragged(MouseEvent m) {
 		Graphics2D g = offscreen.createGraphics();
 
-		//TODO step3 mix color
+		//TODO step1 Transparent
 		Color temp = (Color) drawit.colorToolbar.getSelectCommand();
-		Color base = new Color(offscreen.getRGB(m.getX(),m.getY()));
-		Color mix;
-		if (base.getRGB()==-1){
-			mix = temp;
-		}else {
-			mix = new Color(temp.getRGB()+base.getRGB());
-		}
-		System.out.println("temp:"+temp);
-		System.out.println("base:"+base);
-
-		System.out.println("mix:"+mix);
-		Color color = new Color(mix.getRed(),mix.getGreen(),mix.getBlue(),drawit.trpSlider.getValue());
+		Color color = new Color(temp.getRed(),temp.getGreen(),temp.getBlue(),drawit.trpSlider.getValue());
 		bc = color.getRGB();
 		g.setColor(color);
 
 		//System.out.println("Color:"+drawit.colorToolbar.getSelectCommand());
-		//TODO step1 thickness
-		g.setStroke(new BasicStroke(drawit.thkSlider.getValue()/10));
+
 		//`System.out.println("Slide Value is : " + drawit.aSlider.getValue());
 	
 		//g.fill(new Ellipse2D.Double(m.getX() - 1.0, m.getY() - 1.0, 2.0, 2.0));
 
 		//TODO step2 spray
 		if(drawit.paintToolbar.getSelectCommand()=="spray"){
-			for(int i=0;i<10;i++){
+			int k = drawit.thkSlider.getValue()/5;
+			for(int i=0;i<k;i++){
 				Random random = new Random();
-				int r1 = random.nextInt(5);
-				int r2 = random.nextInt(5);
-				g.draw(new Line2D.Double(m.getX()+r1,m.getY()+r2,m.getX()+r1,m.getY()+r2));
+				int r1 = random.nextInt(k);
+				int r2 = random.nextInt(k);
+				if(m.getX()+r1<offscreen.getWidth() && m.getX()-r1>0 && m.getY()+r2<offscreen.getHeight() && m.getX()-r2>0){
+					g.draw(new Line2D.Double(m.getX()+r1,m.getY()+r2,m.getX()+r1,m.getY()+r2));
+					g.draw(new Line2D.Double(m.getX()+r1,m.getY()-r2,m.getX()+r1,m.getY()-r2));
+					g.draw(new Line2D.Double(m.getX()-r1,m.getY()+r2,m.getX()-r1,m.getY()+r2));
+					g.draw(new Line2D.Double(m.getX()-r1,m.getY()-r2,m.getX()-r1,m.getY()-r2));
+					g.draw(new Line2D.Double(m.getX(),m.getY(),m.getX(),m.getY()));
+				}
+
+
 			}
 		}
 
+
 		if(drawit.paintToolbar.getSelectCommand()=="line"){
+			//TODO step1 thickness
+			g.setStroke(new BasicStroke(drawit.thkSlider.getValue()/5));
 			g.draw(new Line2D.Double(lastX,lastY,m.getX(),m.getY()));
 		}
 
@@ -135,6 +138,8 @@ public class DrawArea extends JComponent implements MouseMotionListener,
 
 		lastX = m.getX();
 		lastY = m.getY();
+		//lastColor=new Color(offscreen.getRGB(m.getX(),m.getY()));
+
 
 	}
 
@@ -142,6 +147,21 @@ public class DrawArea extends JComponent implements MouseMotionListener,
 	}
 
 	public void mouseClicked(MouseEvent e) {
+
+
+/*
+		System.out.println("Red:"+Color.RED);
+		System.out.println("Green:"+Color.GREEN);
+		System.out.println("Blue:"+Color.BLUE);
+
+		System.out.println("Yellow:"+Color.YELLOW);
+		System.out.println("Purple:"+Color.MAGENTA);
+		System.out.println("Orange:"+Color.ORANGE);
+		System.out.println("White:"+Color.white);
+*/
+
+
+
 
 		//TODO step2
 		if(drawit.paintToolbar.getSelectCommand()=="fill"){
